@@ -7,8 +7,9 @@ import 'package:deli/rest/repository/rest_repository.dart';
 import 'package:deli/rest/widgets/rest_card.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RestDetailScreen extends StatelessWidget {
+class RestDetailScreen extends ConsumerWidget {
   const RestDetailScreen({
     super.key,
     required this.id,
@@ -16,37 +17,12 @@ class RestDetailScreen extends StatelessWidget {
 
   final String id;
 
-  Future<RestDetailModel> getRestDetail() async {
-    final dio = Dio();
-
-    dio.interceptors.add(
-      CustomInterceptor(storage: storage),
-    );
-
-    final repository =
-        RestRepository(dio, baseUrl: 'http://10.0.2.2:3000/restaurant');
-
-    return repository.getRestDetail(id: id);
-    // final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-
-    // final res = await dio.get(
-    //   'http://10.0.2.2:3000/restaurant/$id',
-    //   options: Options(
-    //     headers: {
-    //       'authorization': 'Bearer $accessToken',
-    //     },
-    //   ),
-    // );
-
-    // return res.data;
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultLayout(
       title: '불타는 떡볶이',
       child: FutureBuilder<RestDetailModel>(
-        future: getRestDetail(),
+        future: ref.watch(restRepositoryProvider).getRestDetail(id: id),
         builder: (_, AsyncSnapshot<RestDetailModel> snapshot) {
           if (!snapshot.hasData) {
             return const Center(

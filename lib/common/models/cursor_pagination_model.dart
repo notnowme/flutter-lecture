@@ -3,10 +3,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'cursor_pagination_model.g.dart';
 
+abstract class CursorPaginationBase {}
+
+class CursorPaginationError extends CursorPaginationBase {
+  final String msg;
+
+  CursorPaginationError({
+    required this.msg,
+  });
+}
+
 @JsonSerializable(
   genericArgumentFactories: true,
 )
-class CursorPagination<T> {
+class CursorPagination<T> extends CursorPaginationBase {
   final CursorPaginationMeta meta;
   final List<T> data;
 
